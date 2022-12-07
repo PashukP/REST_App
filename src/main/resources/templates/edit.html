@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update user</title>
+</head>
+<body>
+<form th:method="POST" th:action="@{/admin/edit/}" th:object="${user}">
+    <label for="id">ID</label>
+    <input readonly type="number" th:field="*{id}" id="id">
+    <br/>
+    <label for="firstname">Enter firstname</label>
+    <input type="text" th:field="*{firstname}" id="firstname">
+    <br/>
+    <label for="lastname">Enter lastname:</label>
+    <input type="text" th:field="*{lastname}" id="lastname">
+    <br/>
+    <label for="age">Enter age</label>
+    <input type="text" th:field="*{age}" id="age">
+    <br/>
+    <label for="email">Enter email</label>
+    <input type="text" th:field="*{email}" id="email">
+    <br/>
+    <label for="username">Enter username:</label>
+    <input type="text" th:field="*{username}" id="username">
+    <br/>
+    <label for="password">Enter password:</label>
+    <input type="text" th:field="*{password}" id="password">
+    <br/>
+
+    <th:block th:each="msg : ${user.getRoles()}">
+        <li th:text="${msg.getNoPrefix()}"></li>
+    </th:block>
+    <p>
+        <label>Roles
+            <input type="checkbox" name="listRoles"
+                   th:each="rol : ${listRoles}"
+                   th:text="${rol.getNoPrefix()}"
+                   th:value="${rol.role}"
+                   th:field="*{roles}"
+            />
+        </label>
+    </p>
+
+    <input type="submit" value="Update!">
+</form>
+<br/>
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Logout"/>
+</form>
+<br/>
+<h4><a href="/admin/users">List of users</a></h4>
+</body>
+</html>
