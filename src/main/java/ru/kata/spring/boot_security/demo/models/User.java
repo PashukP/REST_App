@@ -33,7 +33,7 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany(fetch=FetchType.LAZY)
+    @ManyToMany(fetch=FetchType.EAGER)
     @JoinTable(name="users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
@@ -78,6 +78,11 @@ public class User implements UserDetails {
         return roles;
     }
 
+    public String getRolesToString() {
+        String prefix = "ROLE_";
+        String str = roles.toString().replaceAll("^\\[|\\]$", "").replaceAll(prefix, "");
+        return str;
+    }
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }

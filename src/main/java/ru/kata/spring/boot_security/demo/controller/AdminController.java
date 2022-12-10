@@ -9,6 +9,7 @@ import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,9 +32,12 @@ public class AdminController {
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    @GetMapping(value = "/users")
-    public String getAllUsers(Model model) {
+    @GetMapping()
+    public String getAllUsers(Model model, Principal principal) {
         model.addAttribute("users", userService.listUsers());
+        model.addAttribute("userCurrent", userService.loadUserByUsername(principal.getName()));
+        model.addAttribute("listRoles", userService.listRoles());
+        model.addAttribute("newUser", new User());
         return "users";
     }
 
@@ -52,11 +56,8 @@ public class AdminController {
     }
     @PostMapping("/new")
     public String create(@ModelAttribute("user") User user) {
-        List<String> listS = user.getRoles().stream().map(r -> r.getRole()).collect(Collectors.toList());
-        Set<Role> listR = userService.listByRole(listS);
-        user.setRoles(listR);
-        userService.add(user);
-        return "redirect:/admin/users";
+            userService.add(user);
+            return "redirect:/admin";
     }
     //------------------------------------------------------------------------------------------------------------------
     @GetMapping("edit/{id}")
