@@ -59,13 +59,12 @@
                                         </thead>
                                         <tbody>
                                         <tr>
-                                            <td th:utext="${user.getId()}">id</td>
-                                            <td th:utext="${user.getUsername()}">username</td>
-                                            <td th:utext="${user.getFirstname()}">firstname</td>
-                                            <td th:utext="${user.getLastname()}">lastname</td>
-                                            <td th:utext="${user.getAge()}">age</td>
-                                            <td th:utext="${user.getEmail()}">email</td>
-                                            <td th:utext="${user.getPassword()}">password</td>
+                                            <td th:utext="${userCurrent.getId()}">id</td>
+                                            <td th:utext="${userCurrent.getUsername()}">username</td>
+                                            <td th:utext="${userCurrent.getFirstname()}">firstname</td>
+                                            <td th:utext="${userCurrent.getLastname()}">lastname</td>
+                                            <td th:utext="${userCurrent.getAge()}">age</td>
+                                            <td th:utext="${userCurrent.getEmail()}">email</td>
                                             <td th:utext="${userCurrent.getRolesToString}">role</td>
                                         </tr>
                                         </tbody>

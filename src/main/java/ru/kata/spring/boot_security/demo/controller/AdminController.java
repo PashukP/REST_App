@@ -26,13 +26,6 @@ public class AdminController {
         this.userService = userService;
     }
 
-//    @GetMapping
-//    public String home(Model model) {
-//        model.addAttribute("users", userService.listUsers());
-//        return "index";
-//    }
-
-    //------------------------------------------------------------------------------------------------------------------
     @GetMapping()
     public String getAllUsers(Model model, Principal principal) {
         model.addAttribute("users", userService.listUsers());
@@ -42,28 +35,25 @@ public class AdminController {
         return "users";
     }
 
-    @GetMapping("/user")
-    public String getUser(Model model, Principal principal) {
-        UserDetails user = userService.loadUserByUsername(principal.getName());
-        model.addAttribute("userCurrent", user);
-        model.addAttribute("listRoles", userService.listRoles());
-        return "userAdmin";
-    }
+//    @GetMapping("/user")
+//    public String getUser(Model model, Principal principal) {
+//        UserDetails user = userService.loadUserByUsername(principal.getName());
+//        model.addAttribute("userCurrent", user);
+//        model.addAttribute("listRoles", userService.listRoles());
+//        return "userAdmin";
+//    }
 
-    //------------------------------------------------------------------------------------------------------------------
     @PostMapping("/new")
     public String create(@ModelAttribute("user") User user) {
         userService.add(user);
         return "redirect:/admin";
     }
-    //------------------------------------------------------------------------------------------------------------------
     @PostMapping("edit/{id}")
     public String edit(@ModelAttribute("user") User user) {
         userService.update(user);
         return "redirect:/admin";
     }
 
-    //------------------------------------------------------------------------------------------------------------------
     @PostMapping("delete/{id}")
     public String deleteUser(@PathVariable("id") int id) {
         userService.delete(id);
