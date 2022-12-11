@@ -13,8 +13,10 @@ import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -58,8 +60,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Role> listRoles() {
-        return roleDao.listRoles();
+    public LinkedHashSet<Role> listRoles() {
+        return new LinkedHashSet<>(roleDao.listRoles());
     }
 
     @Override
@@ -69,7 +71,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Set<Role> listByRole(List<String> name) {
-        Set<Role> roles = new HashSet<>(roleDao.listByName(name));
+        Set<Role> roles = new LinkedHashSet<>(roleDao.listByName(name));
         return roles;
     }
 
@@ -78,12 +80,15 @@ public class UserServiceImpl implements UserService {
         User userPrimary = userDao.findByName(user.getUsername());
         if(userPrimary != null) {return false;}
         user.setPassword(bCryptPasswordEncoder().encode(user.getPassword()));
+        List<String> listS = user.getRoles().stream().map(r -> r.getRole()).collect(Collectors.toList());
+        Set<Role> listR = listByRole(listS);
+        user.setRoles(listR);
         userDao.add(user);
         return true;
     }
 
     @Override
-    public List<User> listUsers() {
+    public Set<User> listUsers() {
         return userDao.listUsers();
     }
 
@@ -95,11 +100,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public void update(User user) {
         User userPrimary = findById(user.getId());
-        System.out.println(userPrimary);
-        System.out.println(user);
         if(!userPrimary.getPassword().equals(user.getPassword())) {
             user.setPassword(bCryptPasswordEncoder().encode(user.getPassword()));
         }
+        List<String> listS = user.getRoles().stream().map(r -> r.getRole()).collect(Collectors.toList());
+        Set<Role> listR = listByRole(listS);
+        user.setRoles(listR);
         userDao.update(user);
     }
     @Override

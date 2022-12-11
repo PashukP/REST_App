@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
     <title>User page</title>
 </head>
 <body>
 <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-sm-2" href="/admin">
+    <a class="navbar-brand col-sm-2" href="/admin/user">
         <span class="font-weight-bold" th:utext="${userCurrent.username}">USERNAME</span>
         <span class="font-weight-normal"> with roles: </span>
         <span class="font-weight-normal" th:text="${userCurrent.getRolesToString()}">ROLE</span>
@@ -29,7 +30,8 @@
         <div class="col-2 p-0">
             <div class="bg-white vh-100">
                 <nav class="nav nav-pills nav-fill nav flex-column mt-3">
-                    <a class="nav-link active text-start" aria-selected="true" th:href="@{/user}">User</a>
+                    <a class="nav-link text-start" th:href="@{/admin}">Admin</a>
+                    <a class="nav-link active text-start" aria-selected="true" th:href="@{/admin/user}">User</a>
                 </nav>
             </div>
         </div>
@@ -38,6 +40,7 @@
             <div class="tab-content">
                 <div class="row">
                     <div class="col-sm-12 p-3">
+                        <!-- Admin panel -->
                         <h1>User information-page</h1>
                         <div class="card">
                             <div class="card-header">
@@ -49,24 +52,23 @@
                                         <thead>
                                         <tr>
                                             <th>ID</th>
-                                            <th>User Name</th>
-                                            <th>First Name</th>
-                                            <th>Last Name</th>
+                                            <th>Firstname</th>
+                                            <th>Lastname</th>
                                             <th>Age</th>
                                             <th>Email</th>
+                                            <th>Username</th>
                                             <th>Role</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <tr>
-                                            <td th:utext="${user.getId()}">id</td>
-                                            <td th:utext="${user.getUsername()}">username</td>
-                                            <td th:utext="${user.getFirstname()}">firstname</td>
-                                            <td th:utext="${user.getLastname()}">lastname</td>
-                                            <td th:utext="${user.getAge()}">age</td>
-                                            <td th:utext="${user.getEmail()}">email</td>
-                                            <td th:utext="${user.getPassword()}">password</td>
-                                            <td th:utext="${userCurrent.getRolesToString}">role</td>
+                                            <td th:utext="${userCurrent.id}">id</td>
+                                            <td th:utext="${userCurrent.firstname}">имя</td>
+                                            <td th:utext="${userCurrent.lastname}">фамилия</td>
+                                            <td th:utext="${userCurrent.age}">возраст</td>
+                                            <td th:utext="${userCurrent.email}">email</td>
+                                            <td th:utext="${userCurrent.username}">логин</td>
+                                            <td th:utext="${userCurrent.getRolesToString}">права доступа</td>
                                         </tr>
                                         </tbody>
                                     </table>

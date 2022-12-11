@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,11 +26,11 @@ public class AdminController {
         this.userService = userService;
     }
 
-    @GetMapping
-    public String home(Model model) {
-        model.addAttribute("users", userService.listUsers());
-        return "index";
-    }
+//    @GetMapping
+//    public String home(Model model) {
+//        model.addAttribute("users", userService.listUsers());
+//        return "index";
+//    }
 
     //------------------------------------------------------------------------------------------------------------------
     @GetMapping()
@@ -41,49 +42,31 @@ public class AdminController {
         return "users";
     }
 
-    @GetMapping("/{id}")
-    public String getUser(@PathVariable("id") int id, Model model) {
-        model.addAttribute("user", userService.findById(id));
-        return "user";
+    @GetMapping("/user")
+    public String getUser(Model model, Principal principal) {
+        UserDetails user = userService.loadUserByUsername(principal.getName());
+        model.addAttribute("userCurrent", user);
+        model.addAttribute("listRoles", userService.listRoles());
+        return "userAdmin";
     }
 
     //------------------------------------------------------------------------------------------------------------------
-
-    @GetMapping(value = "/new")
-    public String newUser(@ModelAttribute("user") User user, Model model) {
-        model.addAttribute("listRoles", userService.listRoles());
-        return "new";
-    }
     @PostMapping("/new")
     public String create(@ModelAttribute("user") User user) {
-            userService.add(user);
-            return "redirect:/admin";
+        userService.add(user);
+        return "redirect:/admin";
     }
     //------------------------------------------------------------------------------------------------------------------
-    @GetMapping("edit/{id}")
-    public String edit(@PathVariable("id") int id, Model model) {
-        User user = userService.findById(id);
-        model.addAttribute("user", userService.findByUsername(userService.findById(id).getUsername()));
-        model.addAttribute("listRoles", userService.listRoles());
-        return "edit";
-    }
-
-    @PostMapping("edit")
-    public String update(@ModelAttribute("user") User user) {
-//        if (bindingResult.hasErrors()) {
-//            return "edit";
-//        }
-        List<String> listS = user.getRoles().stream().map(r -> r.getRole()).collect(Collectors.toList());
-        Set<Role> listR = userService.listByRole(listS);
-        user.setRoles(listR);
+    @PostMapping("edit/{id}")
+    public String edit(@ModelAttribute("user") User user) {
         userService.update(user);
-        return "redirect:/admin/users";
+        return "redirect:/admin";
     }
 
     //------------------------------------------------------------------------------------------------------------------
-    @GetMapping("delete/{id}")
+    @PostMapping("delete/{id}")
     public String deleteUser(@PathVariable("id") int id) {
         userService.delete(id);
-        return "redirect:/admin/users";
+        return "redirect:/admin";
     }
 }
