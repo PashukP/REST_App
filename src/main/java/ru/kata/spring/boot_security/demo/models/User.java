@@ -1,4 +1,5 @@
 package ru.kata.spring.boot_security.demo.models;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -16,10 +17,10 @@ public class User implements UserDetails {
     private int id;
 
     @Column(name = "Firstname")
-    private String firstname;
+    private String firstName;
 
     @Column(name = "Lastname")
-    private String lastname;
+    private String lastName;
 
     @Column(name = "age")
     private String age;
@@ -33,7 +34,7 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany(fetch=FetchType.EAGER)
+    @ManyToMany(fetch=FetchType.LAZY)
     @JoinTable(name="users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
@@ -41,26 +42,27 @@ public class User implements UserDetails {
 
     public User() {}
 
-    public User(String firstname, String lastname, String age, String email, String userName, String password, Set<Role> roles) {
-        this.firstname = firstname;
-        this.lastname = lastname;
+    public User(String firstName, String lastName, String age, String email, String username, String password, Set<Role> roles) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.age = age;
         this.email = email;
-        this.username = userName;
+        this.username = username;
         this.password = password;
         this.roles = roles;
     }
 
-    public User(int id, String firstname, String lastname, String age, String email, String userName, String password, Set<Role> roles) {
+    public User(int id, String firstName, String lastName, String age, String email, String username, String password, Set<Role> roles) {
         this.id = id;
-        this.firstname = firstname;
-        this.lastname = lastname;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.age = age;
         this.email = email;
-        this.username = userName;
+        this.username = username;
         this.password = password;
         this.roles = roles;
     }
+
 
     public int getId() {
         return id;
@@ -79,28 +81,28 @@ public class User implements UserDetails {
     }
 
     public String getRolesToString() {
-        String prefix = "ROLE_";
-        String str = roles.toString().replaceAll("^\\[|\\]$", "").replaceAll(prefix, "");
+        String str = roles.toString().replaceAll("^\\[|\\]$", "");
         return str;
     }
+
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setFirstName(String firstname) {
+        this.firstName = firstname;
     }
 
-    public String getLastname() {
-        return lastname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setLastName(String lastname) {
+        this.lastName = lastname;
     }
 
     public String getAge() {
@@ -135,21 +137,25 @@ public class User implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return true;
     }
@@ -176,8 +182,8 @@ public class User implements UserDetails {
         User user = (User) o;
 
         if (id != user.id) return false;
-        if (!Objects.equals(firstname, user.firstname)) return false;
-        if (!Objects.equals(lastname, user.lastname)) return false;
+        if (!Objects.equals(firstName, user.firstName)) return false;
+        if (!Objects.equals(lastName, user.lastName)) return false;
         if (!Objects.equals(age, user.age)) return false;
         if (!Objects.equals(email, user.email)) return false;
         if (!Objects.equals(username, user.username)) return false;
@@ -188,8 +194,8 @@ public class User implements UserDetails {
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + (firstname != null ? firstname.hashCode() : 0);
-        result = 31 * result + (lastname != null ? lastname.hashCode() : 0);
+        result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
+        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         result = 31 * result + (age != null ? age.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);
         result = 31 * result + (username != null ? username.hashCode() : 0);

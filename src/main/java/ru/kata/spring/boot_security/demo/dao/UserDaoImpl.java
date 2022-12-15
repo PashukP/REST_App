@@ -6,7 +6,6 @@ import ru.kata.spring.boot_security.demo.models.User;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -15,31 +14,36 @@ public class UserDaoImpl implements UserDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public User findByName(String username) {
-        return entityManager.createQuery("select u from User u join fetch u.roles where u.username = :id", User.class)
-                .setParameter("id", username)
+    @Override
+    public User getByName(String username) {
+        return entityManager.createQuery("select u from User u join fetch u.roles where u.username = :username", User.class)
+                .setParameter("username", username)
                 .getResultList().stream().findAny().orElse(null);
     }
 
+    @Override
     public  void delete(int id) {
-        User user = entityManager.find(User.class, id);
-        entityManager.remove(user);
+        entityManager.remove(getById(id));
     }
 
+    @Override
     public void update(User user) {
         entityManager.merge(user);
     }
 
+    @Override
     public boolean add(User user) {
         entityManager.persist(user);
         return true;
     }
 
-    public Set<User> listUsers() {
+    @Override
+    public Set<User> getListUsers() {
         return new LinkedHashSet<>(entityManager.createQuery("select s from User s", User.class).getResultList());
     }
 
-    public User findById(int id) {
+    @Override
+    public User getById(int id) {
         return entityManager.find(User.class, id);
     }
 }

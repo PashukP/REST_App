@@ -8,34 +8,48 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
+import ru.kata.spring.boot_security.demo.service.RoleService;
+import ru.kata.spring.boot_security.demo.service.UserService;
+
 
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    final UserServiceImpl userService;
+    final UserService userService;
+    final RoleService roleService;
     final SuccessUserHandler loginSuccessHandler;
 
     @Autowired
-    public WebSecurityConfig(UserServiceImpl userService, SuccessUserHandler successUserHandler) {
+    public WebSecurityConfig(UserService userService, RoleService roleService, SuccessUserHandler successUserHandler) {
         this.userService = userService;
+        this.roleService = roleService;
         this.loginSuccessHandler = successUserHandler;
     }
 
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        // выключаем кроссдоменную секьюрность (на этапе обучения неважна)
         http.csrf().disable()
+                // делаем страницу регистрации недоступной для авторизированных пользователей
                 .authorizeRequests()
+//                .antMatchers("/**").permitAll()
+
+                // защищенные URL
+                .antMatchers("/api/**").permitAll()
                 .antMatchers("/admin/**", "/", "/index").hasRole("ADMIN")
                 .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                 .anyRequest().authenticated()
                 .and()
+                // указываем страницу с формой логина
+                // указываем логику обработки при логине
                 .formLogin().successHandler(loginSuccessHandler).loginPage("/")
+                // даем доступ к форме логина всем
                 .permitAll()
                 .and()
+                // разрешаем делать логаут всем
                 .logout()
                 .permitAll();
     }
@@ -55,11 +69,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //        Role role1 = new Role("ROLE_ADMIN");
 //        Role role2 = new Role("ROLE_USER");
 //
-//        userService.addRole(role1);
-//        userService.addRole(role2);
+//        roleService.add(role1);
+//        roleService.add(role2);
 //
-//        List<Role> roleAdmin = new ArrayList<>();
-//        List<Role> roleUser = new ArrayList<>();
+//        Set<Role> roleAdmin = new HashSet<>();
+//        Set<Role> roleUser = new HashSet<>();
 //
 //        roleAdmin.add(role1);
 //        roleUser.add(role2);
